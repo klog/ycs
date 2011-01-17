@@ -11,7 +11,7 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace YMSGLib
 {
-    public partial class YMSGConnection
+    public partial class YMSGConnection : IDisposable
     {
         public static string[] GetYahooChatServers()
         {
@@ -61,7 +61,7 @@ namespace YMSGLib
                     allCookies.IndexOf(";",
                     allCookies.IndexOf("T=z=")) - allCookies.IndexOf("T=z="));
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 this.OnYMSGInformation(this, new YMSGInfoEventArgs(YMSGInfoEventType.Information, Resources._1001));
                 throw;
@@ -76,5 +76,35 @@ namespace YMSGLib
             this.OnYMSGInformation(this, new YMSGInfoEventArgs(YMSGInfoEventType.Information, Resources._1002));
             return false;
         }
+
+        #region IDisposable stuff
+
+        private bool __isDisposed = false;
+        protected virtual void Dispose(bool fromDispose)
+        {
+            if (fromDispose)
+            {
+                this.isConnecting.Dispose();
+                this.isSending.Dispose();
+                this.socket.Close();
+            }
+        }
+
+        public void Dispose()
+        {
+            if (!this.__isDisposed)
+            {
+                Dispose(true);
+                GC.SuppressFinalize(this);
+            }
+            this.__isDisposed = true;
+        }
+
+        ~YMSGConnection()
+        {
+            Dispose(false);
+        }
+
+        #endregion
     }
 }

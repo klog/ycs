@@ -13,37 +13,39 @@ namespace YCSTestConsole
         static void Main(string[] args)
         {
             string userName, passwd;
-            YMSGConnection yc = new YMSGConnection("scs.msg.yahoo.com", 5050);
-            yc.OnYMSGInformation += new EventHandler<YMSGInfoEventArgs>(yc_OnYMSGInformation);
-            yc.OnYMSGMessage += new EventHandler<YMSGMessageEventArgs>(yc_OnYMSGMessage);
-            
-            Console.WriteLine("Username: ");
-            userName = Console.ReadLine();
-            Console.WriteLine("Password: ");
-            passwd = Console.ReadLine();
-            
-            yc.RetrieveCookies(userName, passwd);
-            yc.Connect();
-            yc.Logon();
-
-            Console.WriteLine("You're logged in as {0}. This is a test client and supports the following commands.", yc.LoginName);
-            Console.WriteLine("/pm <username> <message>");
-            Console.WriteLine("/quit");
-            while (true)
+            using (YMSGConnection yc = new YMSGConnection("scs.msg.yahoo.com", 5050))
             {
-                string cmd = Console.ReadLine();
-                try
+                yc.OnYMSGInformation += new EventHandler<YMSGInfoEventArgs>(yc_OnYMSGInformation);
+                yc.OnYMSGMessage += new EventHandler<YMSGMessageEventArgs>(yc_OnYMSGMessage);
+
+                Console.WriteLine("Username: ");
+                userName = Console.ReadLine();
+                Console.WriteLine("Password: ");
+                passwd = Console.ReadLine();
+
+                yc.RetrieveCookies(userName, passwd);
+                yc.Connect();
+                yc.Logon();
+
+                Console.WriteLine("You're logged in as {0}. This is a test client and supports the following commands.", yc.LoginName);
+                Console.WriteLine("/pm <username> <message>");
+                Console.WriteLine("/quit");
+                while (true)
                 {
-                    if (cmd.Substring(1, 2) == "pm")
-                        yc.SendPM(cmd.Split(' ')[1], string.Join(" ", cmd.Split(' ').Skip(2).ToArray()));
-                    else if (cmd.Substring(1, 4) == "quit")
-                        break;
-                    else
+                    string cmd = Console.ReadLine();
+                    try
+                    {
+                        if (cmd.Substring(1, 2) == "pm")
+                            yc.SendPM(cmd.Split(' ')[1], string.Join(" ", cmd.Split(' ').Skip(2).ToArray()));
+                        else if (cmd.Substring(1, 4) == "quit")
+                            break;
+                        else
+                            Console.WriteLine("Unknown Command.");
+                    }
+                    catch (ArgumentException)
+                    {
                         Console.WriteLine("Unknown Command.");
-                }
-                catch (ArgumentException)
-                {
-                    Console.WriteLine("Unknown Command.");
+                    }
                 }
             }
         }
