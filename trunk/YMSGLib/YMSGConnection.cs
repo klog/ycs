@@ -37,7 +37,7 @@ namespace YMSGLib
         public int Port { get; set; }
         public string LobbyName { get; protected set; }
         public int SessionID { get; protected set; }
-        public string Login { get; protected set; }
+        public string LoginName { get; protected set; }
 
         private Socket socket;
         private YMSGPacketBuilder pb = new YMSGPacketBuilder();
@@ -62,7 +62,7 @@ namespace YMSGLib
                     rs.buffer.Length, SocketFlags.None,
                     new AsyncCallback(ReceiveCallback), rs);
             }
-            
+
             isConnecting.Set();
         }
 
@@ -114,7 +114,7 @@ namespace YMSGLib
             string[] cookies = __SplitCookie(__GetCookie(username, password));
             this.CookieY = cookies[0];
             this.CookieT = cookies[1];
-            this.Login = username;
+            this.LoginName = username;
         }
 
         /// <summary>
@@ -137,7 +137,7 @@ namespace YMSGLib
                 socket = new Socket(AddressFamily.InterNetwork,
                     SocketType.Stream, ProtocolType.Tcp | ProtocolType.IP);
             }
-            else if(socket.Connected)
+            else if (socket.Connected)
                 throw new InvalidOperationException(string.Format(Resources._1005, this.Host, this.Port));
 
             isConnecting.Reset();
@@ -145,47 +145,46 @@ namespace YMSGLib
                 new AsyncCallback(ConnectCallback), this);
         }
 
-        protected virtual void Send(YMSGPacket packet)
+        public virtual void Send(YMSGPacket packet)
         {
-            isSending.WaitOne();
             packet.SessionID = (this.SessionID != 0 ? this.SessionID : packet.SessionID);
-            //ThreadPool.QueueUserWorkItem(x =>
-            //{
-            //    YMSGConnection _con = x as YMSGConnection;
-                this.isConnecting.WaitOne();
-                byte[] data = (byte[])packet;
-                if (this.socket.Connected)
-                    this.socket.BeginSend(data, 0, data.Length, SocketFlags.None, new AsyncCallback(x => {
-                        YMSGConnection yc = x.AsyncState as YMSGConnection;
-                        int bytesSent = yc.socket.EndSend(x);
-                        yc.OnYMSGInformation(this, new YMSGInfoEventArgs(YMSGInfoEventType.BytesSent, bytesSent.ToString()));
-                        yc.isSending.Set();
-                    }), this);
-            //        _con.socket.Send(data, SocketFlags.None);
-            //    isSending.Set();
-            //}, this);
+            Send((byte[])packet);
         }
 
+        public virtual void Send(byte[] packet)
+        {
+            isSending.WaitOne();
+            this.isConnecting.WaitOne();
+
+            if (this.socket.Connected)
+                this.socket.BeginSend(packet, 0, packet.Length, SocketFlags.None, new AsyncCallback(x =>
+                {
+                    YMSGConnection yc = x.AsyncState as YMSGConnection;
+                    int bytesSent = yc.socket.EndSend(x);
+                    yc.OnYMSGInformation(this, new YMSGInfoEventArgs(YMSGInfoEventType.BytesSent, bytesSent.ToString()));
+                    yc.isSending.Set();
+                }), this);
+        }
         /// <summary>
         /// Authenticates against CookieY & CookieT and logs on to pager.
         /// </summary>
         public virtual void Logon()
         {
-            YMSGPacket pkt = new YMSGPacket() { Service=550, Status=12 };
+            YMSGPacket pkt = new YMSGPacket() { Service = 550, Status = 12 };
 
-            pkt.Payload["0"] = this.Login;
-            pkt.Payload["2"] = this.Login;
-            pkt.Payload["1"] = this.Login;
+            pkt.Payload["0"] = this.LoginName;
+            pkt.Payload["2"] = this.LoginName;
+            pkt.Payload["1"] = this.LoginName;
             pkt.Payload["244"] = "16777215";
             pkt.Payload["6"] = this.CookieY + "; " + this.CookieT + ";";
             pkt.Payload["98"] = "us";
 
             Send(pkt);
         }
-        
+
         public void SendPM(string id, string message, string infTag = null)
         {
-            if(!string.IsNullOrEmpty(infTag))
+            if (!string.IsNullOrEmpty(infTag))
                 message = infTag + message;
 
             YMSGPacket pkt = new YMSGPacket()
@@ -194,7 +193,7 @@ namespace YMSGLib
                 Status = 33
             };
 
-            pkt["1"] = this.Login;
+            pkt["1"] = this.LoginName;
             pkt["5"] = id.Trim();
             pkt["14"] = message;
             pkt["97"] = "1";

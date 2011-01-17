@@ -26,7 +26,7 @@ namespace YCSTestConsole
             yc.Connect();
             yc.Logon();
 
-            Console.WriteLine("You're logged in as {0}. This is a test client and supports the following commands.");
+            Console.WriteLine("You're logged in as {0}. This is a test client and supports the following commands.", yc.LoginName);
             Console.WriteLine("/pm <username> <message>");
             Console.WriteLine("/quit");
             while (true)
