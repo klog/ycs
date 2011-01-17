@@ -48,7 +48,7 @@ namespace YCSLib
     }
 
 
-    public class YMSGPacket
+    public class YMSGPacket : EventArgs
     {
         public class YMSGPacketPayload : List<KeyValuePair<string, string>>
         {

@@ -55,7 +55,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="YMSGInfoEventArgs.cs" />
     <Compile Include="YMSGInfoEventType.cs" />
-    <Compile Include="YMSGMessageEventArgs.cs" />
     <Compile Include="YMSGPacket.cs" />
     <Compile Include="YMSGPacketBuilder.cs" />
     <Compile Include="YMSGText.cs" />

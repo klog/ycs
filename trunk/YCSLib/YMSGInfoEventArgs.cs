@@ -17,6 +17,6 @@ namespace YCSLib
             this.Data = data;
         }
         public YMSGInfoEventType EventType { get; private set; }
-        public string Data { get; private set; }
+        public object Data { get; private set; }
     }
 }

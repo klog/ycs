@@ -7,8 +7,8 @@ namespace YCSLib
 {
     public enum YMSGInfoEventType
     {
-        BytesSent,
-        BytesReceived,
-        Information
+        BytesSent, // Data is of type System.Int32
+        BytesReceived, // Data is of type System.Int32
+        Information // Data is of type System.String
     }
 }

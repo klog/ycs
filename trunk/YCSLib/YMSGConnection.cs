@@ -13,6 +13,8 @@ using System.Collections.Specialized;
 
 namespace YCSLib
 {
+    public delegate void YMSGEventHandler<T>(T e) where T : EventArgs;
+    
     public partial class YMSGConnection
     {
         public YMSGConnection()
@@ -26,8 +28,8 @@ namespace YCSLib
         }
 
         #region events
-        public event EventHandler<YMSGMessageEventArgs> OnYMSGMessage;
-        public event EventHandler<YMSGInfoEventArgs> OnYMSGInformation;
+        public event YMSGEventHandler<YMSGPacket> OnYMSGMessageReceived;
+        public event YMSGEventHandler<YMSGInfoEventArgs> OnYMSGInformation;
         #endregion
 
         #region properties
@@ -73,7 +75,7 @@ namespace YCSLib
             {
                 int bytesRead = store.socket.EndReceive(iar);
 
-                this.OnYMSGInformation(this, new YMSGInfoEventArgs(YMSGInfoEventType.BytesReceived, bytesRead.ToString()));
+                this.OnYMSGInformation(new YMSGInfoEventArgs(YMSGInfoEventType.BytesReceived, bytesRead.ToString()));
 
                 if (bytesRead > 0)
                 {
@@ -87,10 +89,7 @@ namespace YCSLib
                             {
                                 YMSGPacket incoming = pd;
 
-                                OnYMSGMessage(this, new YMSGMessageEventArgs(incoming, DateTime.UtcNow));
-
-                                /* save my precccciiiioussss */
-                                this.SessionID = incoming.SessionID; // TODO: Thread unsafe!
+                                OnYMSGMessage(incoming);
                             }
                         }), pb.GetPackets());
                     }
@@ -125,7 +124,7 @@ namespace YCSLib
             this.CookieT = string.Empty; this.CookieY = string.Empty;
         }
 
-        public void Connect(string host = null, int? port = null)
+        public virtual void Connect(string host = null, int? port = null)
         {
             if (!string.IsNullOrEmpty(host))
                 this.Host = host;
@@ -151,6 +150,12 @@ namespace YCSLib
             Send((byte[])packet);
         }
 
+        protected virtual void OnYMSGMessage(YMSGPacket packet)
+        {
+            this.SessionID = packet.SessionID;
+            this.OnYMSGMessageReceived(packet);
+        }
+
         public virtual void Send(byte[] packet)
         {
             isSending.WaitOne();
@@ -161,10 +166,11 @@ namespace YCSLib
                 {
                     YMSGConnection yc = x.AsyncState as YMSGConnection;
                     int bytesSent = yc.socket.EndSend(x);
-                    yc.OnYMSGInformation(this, new YMSGInfoEventArgs(YMSGInfoEventType.BytesSent, bytesSent.ToString()));
+                    yc.OnYMSGInformation(new YMSGInfoEventArgs(YMSGInfoEventType.BytesSent, bytesSent.ToString()));
                     yc.isSending.Set();
                 }), this);
         }
+
         /// <summary>
         /// Authenticates against CookieY & CookieT and logs on to pager.
         /// </summary>
