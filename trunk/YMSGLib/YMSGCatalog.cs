@@ -6,7 +6,7 @@ using System.Xml;
 using System.Net;
 using System.Xml.Linq;
 
-namespace YMSGLib
+namespace YCSLib
 {
     public static class YMSGRoomCatalog
     {

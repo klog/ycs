@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YMSGLib", "YMSGLib\YMSGLib.csproj", "{54CC4618-C6FF-482C-A2FA-EEEC0017A946}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YCSLib", "YMSGLib\YCSLib.csproj", "{54CC4618-C6FF-482C-A2FA-EEEC0017A946}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YCSTestConsole", "YCSTestConsole\YCSTestConsole.csproj", "{38DCD7D7-3196-4171-B21D-67B0B5EB0D40}"
 EndProject

@@ -11,7 +11,7 @@ using System.Text.RegularExpressions;
 using System.Xml;
 using System.Collections.Specialized;
 
-namespace YMSGLib
+namespace YCSLib
 {
     public partial class YMSGConnection
     {

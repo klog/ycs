@@ -8,8 +8,8 @@
     <ProjectGuid>{54CC4618-C6FF-482C-A2FA-EEEC0017A946}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>YMSGLib</RootNamespace>
-    <AssemblyName>YMSGLib</AssemblyName>
+    <RootNamespace>YCSLib</RootNamespace>
+    <AssemblyName>YCSLib</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

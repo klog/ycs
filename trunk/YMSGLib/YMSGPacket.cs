@@ -5,18 +5,18 @@ using System.Text;
 using System.Runtime.CompilerServices;
 using System.Diagnostics;
 
-namespace YMSGLib
+namespace YCSLib
 {
     public static class ExtensionMethods
     {
-        public static YMSGLib.YMSGPacket.YMSGPacketPayload Slice(this YMSGLib.YMSGPacket.YMSGPacketPayload payload, string key, int index)
+        public static YCSLib.YMSGPacket.YMSGPacketPayload Slice(this YCSLib.YMSGPacket.YMSGPacketPayload payload, string key, int index)
         {
-            YMSGLib.YMSGPacket.YMSGPacketPayload retVal = null;
+            YCSLib.YMSGPacket.YMSGPacketPayload retVal = null;
             int x = 0;
             for (int i = 0; i < payload.Count; i++)
                 if (payload[index].Key == key)
                     if (x == index)
-                        retVal = new YMSGLib.YMSGPacket.YMSGPacketPayload(payload.GetRange(x, payload.FindIndex(x, p =>
+                        retVal = new YCSLib.YMSGPacket.YMSGPacketPayload(payload.GetRange(x, payload.FindIndex(x, p =>
                         { if (p.Key == key) return true; return false; }
                         )));
                     else

@@ -47,9 +47,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\YMSGLib\YMSGLib.csproj">
+    <ProjectReference Include="..\YMSGLib\YCSLib.csproj">
       <Project>{54CC4618-C6FF-482C-A2FA-EEEC0017A946}</Project>
-      <Name>YMSGLib</Name>
+      <Name>YCSLib</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

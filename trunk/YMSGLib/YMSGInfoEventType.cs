@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace YMSGLib
+namespace YCSLib
 {
     public enum YMSGInfoEventType
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Net.Sockets;
 
-namespace YMSGLib
+namespace YCSLib
 {
     internal class ReceiveStore
     {
