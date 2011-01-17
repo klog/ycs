@@ -47,7 +47,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\YMSGLib\YCSLib.csproj">
+    <ProjectReference Include="..\YCSLib\YCSLib.csproj">
       <Project>{54CC4618-C6FF-482C-A2FA-EEEC0017A946}</Project>
       <Name>YCSLib</Name>
     </ProjectReference>
