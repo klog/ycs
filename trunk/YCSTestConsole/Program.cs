@@ -15,8 +15,8 @@ namespace YCSTestConsole
             string userName, passwd;
             using (YMSGConnection yc = new YMSGConnection("scs.msg.yahoo.com", 5050))
             {
-                yc.OnYMSGInformation += new EventHandler<YMSGInfoEventArgs>(yc_OnYMSGInformation);
-                yc.OnYMSGMessage += new EventHandler<YMSGMessageEventArgs>(yc_OnYMSGMessage);
+                yc.OnYMSGInformation += new YMSGEventHandler<YMSGInfoEventArgs>(yc_OnYMSGInformation);
+                yc.OnYMSGMessageReceived += new YMSGEventHandler<YMSGPacket>(yc_OnYMSGMessage);
 
                 Console.WriteLine("Username: ");
                 userName = Console.ReadLine();
@@ -50,17 +50,17 @@ namespace YCSTestConsole
             }
         }
 
-        static void yc_OnYMSGMessage(object sender, YMSGMessageEventArgs e)
+        static void yc_OnYMSGMessage(YMSGPacket e)
         {
-            if (e.YMSGData.Service == 6)
+            if (e.Service == 6)
             {
-                Console.WriteLine("PM received from {0}:", e.YMSGData["4"]);
-                Console.WriteLine(YMSGText.StripTags(e.YMSGData["14"], YmsgStripTagOptions.StripAll));
+                Console.WriteLine("PM received from {0}:", e["4"]);
+                Console.WriteLine(YMSGText.StripTags(e["14"], YmsgStripTagOptions.StripAll));
             }
             //Console.WriteLine(e.YMSGData.ToString());
         }
 
-        static void yc_OnYMSGInformation(object sender, YMSGInfoEventArgs e)
+        static void yc_OnYMSGInformation(YMSGInfoEventArgs e)
         {
             if(e.EventType== YMSGInfoEventType.BytesSent)
                 Console.WriteLine("Bytes Sent: " + e.Data);
