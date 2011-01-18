@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ExtensionMethods.cs" />
     <Compile Include="ReceiveStore.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -57,6 +58,7 @@
     <Compile Include="YMSGInfoEventType.cs" />
     <Compile Include="YMSGPacket.cs" />
     <Compile Include="YMSGPacketBuilder.cs" />
+    <Compile Include="YMSGPacketPayload.cs" />
     <Compile Include="YMSGText.cs" />
   </ItemGroup>
   <ItemGroup>
