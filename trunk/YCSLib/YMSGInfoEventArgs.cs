@@ -11,7 +11,7 @@ namespace YCSLib
         {
 
         }
-        public YMSGInfoEventArgs(YMSGInfoEventType type, string data)
+        public YMSGInfoEventArgs(YMSGInfoEventType type, object data)
         {
             this.EventType = type;
             this.Data = data;

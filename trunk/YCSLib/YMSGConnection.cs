@@ -28,8 +28,8 @@ namespace YCSLib
         }
 
         #region events
-        public event YMSGEventHandler<YMSGPacket> OnYMSGMessageReceived;
-        public event YMSGEventHandler<YMSGInfoEventArgs> OnYMSGInformation;
+        public event YMSGEventHandler<YMSGPacket> MessageReceived;
+        public event YMSGEventHandler<YMSGInfoEventArgs> NotifyInformation;
         #endregion
 
         #region properties
@@ -75,7 +75,7 @@ namespace YCSLib
             {
                 int bytesRead = store.socket.EndReceive(iar);
 
-                this.OnYMSGInformation(new YMSGInfoEventArgs(YMSGInfoEventType.BytesReceived, bytesRead.ToString()));
+                this.OnNotifyInformation(YMSGInfoEventType.BytesReceived, bytesRead);
 
                 if (bytesRead > 0)
                 {
@@ -88,8 +88,7 @@ namespace YCSLib
                             foreach (byte[] pd in packets)
                             {
                                 YMSGPacket incoming = pd;
-
-                                OnYMSGMessage(incoming);
+                                OnMessageReceived(incoming); // TODO: thread safe?
                             }
                         }), pb.GetPackets());
                     }
@@ -150,10 +149,17 @@ namespace YCSLib
             Send((byte[])packet);
         }
 
-        protected virtual void OnYMSGMessage(YMSGPacket packet)
+        protected virtual void OnMessageReceived(YMSGPacket packet)
         {
             this.SessionID = packet.SessionID;
-            this.OnYMSGMessageReceived(packet);
+            if(this.MessageReceived != null)
+                this.MessageReceived(packet);
+        }
+
+        protected virtual void OnNotifyInformation(YMSGInfoEventType type, object o)
+        {
+            if (this.NotifyInformation != null)
+                this.NotifyInformation(new YMSGInfoEventArgs(type, o));
         }
 
         public virtual void Send(byte[] packet)
@@ -166,7 +172,7 @@ namespace YCSLib
                 {
                     YMSGConnection yc = x.AsyncState as YMSGConnection;
                     int bytesSent = yc.socket.EndSend(x);
-                    yc.OnYMSGInformation(new YMSGInfoEventArgs(YMSGInfoEventType.BytesSent, bytesSent.ToString()));
+                    yc.OnNotifyInformation(YMSGInfoEventType.BytesSent, bytesSent);
                     yc.isSending.Set();
                 }), this);
         }

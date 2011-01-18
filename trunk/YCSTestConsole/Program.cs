@@ -15,8 +15,8 @@ namespace YCSTestConsole
             string userName, passwd;
             using (YMSGConnection yc = new YMSGConnection("scs.msg.yahoo.com", 5050))
             {
-                yc.OnYMSGInformation += new YMSGEventHandler<YMSGInfoEventArgs>(yc_OnYMSGInformation);
-                yc.OnYMSGMessageReceived += new YMSGEventHandler<YMSGPacket>(yc_OnYMSGMessage);
+                yc.NotifyInformation += new YMSGEventHandler<YMSGInfoEventArgs>(yc_OnYMSGInformation);
+                yc.MessageReceived += new YMSGEventHandler<YMSGPacket>(yc_OnYMSGMessage);
 
                 Console.WriteLine("Username: ");
                 userName = Console.ReadLine();
