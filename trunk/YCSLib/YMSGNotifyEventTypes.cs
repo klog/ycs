@@ -5,7 +5,7 @@ using System.Text;
 
 namespace YCSLib
 {
-    public enum YMSGInfoEventType
+    public enum YMSGNotifyEventTypes
     {
         BytesSent, // Data is of type System.Int32
         BytesReceived, // Data is of type System.Int32

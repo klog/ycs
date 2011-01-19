@@ -5,18 +5,18 @@ using System.Text;
 
 namespace YCSLib
 {
-    public sealed class YMSGInfoEventArgs : EventArgs
+    public sealed class YMSGNotifyEventArgs : EventArgs
     {
-        private YMSGInfoEventArgs()
+        private YMSGNotifyEventArgs()
         {
 
         }
-        public YMSGInfoEventArgs(YMSGInfoEventType type, object data)
+        public YMSGNotifyEventArgs(YMSGNotifyEventTypes type, object data)
         {
             this.EventType = type;
             this.Data = data;
         }
-        public YMSGInfoEventType EventType { get; private set; }
+        public YMSGNotifyEventTypes EventType { get; private set; }
         public object Data { get; private set; }
     }
 }

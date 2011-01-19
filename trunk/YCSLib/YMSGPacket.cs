@@ -7,13 +7,15 @@ using System.Diagnostics;
 
 namespace YCSLib
 {
-    public class YMSGPacket : EventArgs
+    public partial class YMSGPacket
     {
         public static bool QuirksMode = false;
+        public static readonly byte[] PayloadDelimeter =
+            new byte[] { (byte)0xc0, (byte)0x80 };
 
         public YMSGPacket()
         {
-            this.Payload = new YMSGPacketPayload();
+            this._Payload = new Payload();
             this.Version = 102;
             this.VendorID = 0x402;
             this.Status = 0x0;
@@ -30,11 +32,7 @@ namespace YCSLib
         #endregion
 
         #region payload
-        public YMSGPacketPayload Payload
-        {
-            get;
-            protected internal set;
-        }
+        protected Payload _Payload;
         #endregion
 
         #region operations
@@ -52,15 +50,15 @@ namespace YCSLib
             Buffer.BlockCopy(data, 20, payload, 0, payload.Length);
 
             int i = 0;
-            while(payload.FindIndex(YMSGPacketPayload.YMSGDelimeter[0], i) > -1)
+            while(payload.FindIndex(PayloadDelimeter, i) > -1)
             {
-                int length = payload.FindIndex(YMSGPacketPayload.YMSGDelimeter[0], i);
+                int length = payload.FindIndex(PayloadDelimeter, i);
                 string s1 = GetEncoding().GetString(payload.Slice(length, i));
                 i += length + 2;
-                length = payload.FindIndex(YMSGPacketPayload.YMSGDelimeter[0], i);
+                length = payload.FindIndex(PayloadDelimeter, i);
                 string s2 = GetEncoding().GetString(payload.Slice(length, i));
                 i += length + 2;
-                retVal.Payload.Add(new KeyValuePair<string, string>(s1, s2));
+                retVal._Payload.Add(new PayloadEntry(s1, s2));
             }
 
             return retVal;
@@ -75,11 +73,11 @@ namespace YCSLib
         {
             return YMSGPacket.FromBytes(bytes);
         }
-
+        
         [MethodImpl(MethodImplOptions.Synchronized)]
         protected internal byte[] ToBytes()
         {
-            byte[] payloadData = this.Payload.ToBytes();
+            byte[] payloadData = this._Payload.ToBytes();
             int payloadSize = payloadData.Length;
             byte[] retVal = new byte[payloadSize + 20];
 
@@ -119,11 +117,11 @@ namespace YCSLib
         {
             get
             {
-                return this.Payload[key];
+                return this._Payload[key];
             }
             set
             {
-                this.Payload[key] = value;
+                this._Payload[key] = value;
             }
         }
 
@@ -142,7 +140,7 @@ namespace YCSLib
             .Append(", Status: ").Append(this.Status.ToString())
             .Append(Environment.NewLine);
 
-            foreach (KeyValuePair<string, string> kv in this.Payload)
+            foreach (var kv in this._Payload)
                 sb.Append(kv.Key + ":" + kv.Value + Environment.NewLine);
 
             return sb.ToString();

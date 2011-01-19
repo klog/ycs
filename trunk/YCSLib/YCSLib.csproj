@@ -54,11 +54,11 @@
     <Compile Include="YMSGCatalog.cs" />
     <Compile Include="YMSGConnection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="YMSGInfoEventArgs.cs" />
-    <Compile Include="YMSGInfoEventType.cs" />
+    <Compile Include="YMSGNotifyEventArgs.cs" />
+    <Compile Include="YMSGNotifyEventTypes.cs" />
     <Compile Include="YMSGPacket.cs" />
     <Compile Include="YMSGPacketBuilder.cs" />
-    <Compile Include="YMSGPacketPayload.cs" />
+    <Compile Include="YMSGPacket.Payload.cs" />
     <Compile Include="YMSGText.cs" />
   </ItemGroup>
   <ItemGroup>

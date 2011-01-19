@@ -15,8 +15,8 @@ namespace YCSTestConsole
             string userName, passwd;
             using (YMSGConnection yc = new YMSGConnection("scs.msg.yahoo.com", 5050))
             {
-                yc.NotifyInformation += new YMSGEventHandler<YMSGInfoEventArgs>(yc_OnYMSGInformation);
-                yc.MessageReceived += new YMSGEventHandler<YMSGPacket>(yc_OnYMSGMessage);
+                yc.NotifyInformation += new Action<YMSGNotifyEventArgs>(yc_OnYMSGInformation);
+                yc.MessageReceived += new Action<YMSGPacket>(yc_OnYMSGMessage);
 
                 Console.WriteLine("Username: ");
                 userName = Console.ReadLine();
@@ -60,13 +60,13 @@ namespace YCSTestConsole
             //Console.WriteLine(e.YMSGData.ToString());
         }
 
-        static void yc_OnYMSGInformation(YMSGInfoEventArgs e)
+        static void yc_OnYMSGInformation(YMSGNotifyEventArgs e)
         {
-            if(e.EventType== YMSGInfoEventType.BytesSent)
+            if(e.EventType== YMSGNotifyEventTypes.BytesSent)
                 Console.WriteLine("Bytes Sent: " + e.Data);
-            else if(e.EventType == YMSGInfoEventType.BytesReceived)
+            else if(e.EventType == YMSGNotifyEventTypes.BytesReceived)
                 Console.WriteLine("Bytes Received: " + e.Data);
-            else if(e.EventType== YMSGInfoEventType.Information)
+            else if(e.EventType== YMSGNotifyEventTypes.Information)
                 Console.WriteLine(e.Data);
         }
     }

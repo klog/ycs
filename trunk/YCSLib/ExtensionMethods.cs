@@ -8,14 +8,14 @@ namespace YCSLib
 {
     public static class ExtensionMethods
     {
-        public static YMSGPacketPayload Slice(this YMSGPacketPayload payload, string key, int index)
+        public static YCSLib.YMSGPacket.Payload Slice(this YCSLib.YMSGPacket.Payload payload, string key, int index)
         {
-            YMSGPacketPayload retVal = null;
+            YCSLib.YMSGPacket.Payload retVal = null;
             int x = 0;
             for (int i = 0; i < payload.Count; i++)
                 if (payload[index].Key == key)
                     if (x == index)
-                        retVal = new YMSGPacketPayload(payload.GetRange(x, payload.FindIndex(x, p =>
+                        retVal = new YCSLib.YMSGPacket.Payload(payload.GetRange(x, payload.FindIndex(x, p =>
                         { if (p.Key == key) return true; return false; }
                         )));
                     else
@@ -24,16 +24,38 @@ namespace YCSLib
         }
 
         [DebuggerStepThrough]
-        internal static unsafe int FindIndex(this byte[] bytes, byte delimeter, int startIndex = 0)
+        private static unsafe bool ExactMatch(byte* pSrc, byte[] pattern)
         {
+            int i = 0;
+            while (i < pattern.Length)
+                if (pattern[i] != *(pSrc + i))
+                    return false;
+                else
+                    i++;
+            return true;
+        }
+
+        /// <summary>
+        /// KMP: leaving it here 'cause the match is trivial. Boyer Moore next?
+        /// </summary>
+        /// <param name="bytes">source array</param>
+        /// <param name="pattern">pattern to match</param>
+        /// <param name="startIndex"></param>
+        /// <returns>index of match found</returns>
+        [DebuggerStepThrough]
+        internal static unsafe int FindIndex(this byte[] bytes, byte[] pattern, int startIndex = 0)
+        {
+            if ((bytes.Length - startIndex) < pattern.Length)
+                return -1;
+
             fixed (byte* pBytes = bytes)
             {
                 int i = startIndex;
                 while (i < bytes.Length)
                 {
-                    if (*(pBytes + i) == delimeter)
+                    if (ExactMatch((pBytes + i), pattern))
                         return (i - startIndex);
-                    i++;
+                    i += 1;
                 }
             }
 

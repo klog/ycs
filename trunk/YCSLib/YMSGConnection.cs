@@ -13,8 +13,6 @@ using System.Collections.Specialized;
 
 namespace YCSLib
 {
-    public delegate void YMSGEventHandler<T>(T e) where T : EventArgs;
-    
     public partial class YMSGConnection
     {
         public YMSGConnection()
@@ -28,8 +26,8 @@ namespace YCSLib
         }
 
         #region events
-        public event YMSGEventHandler<YMSGPacket> MessageReceived;
-        public event YMSGEventHandler<YMSGInfoEventArgs> NotifyInformation;
+        public Action<YMSGPacket> MessageReceived;
+        public Action<YMSGNotifyEventArgs> NotifyInformation;
         #endregion
 
         #region properties
@@ -75,7 +73,7 @@ namespace YCSLib
             {
                 int bytesRead = store.socket.EndReceive(iar);
 
-                this.OnNotifyInformation(YMSGInfoEventType.BytesReceived, bytesRead);
+                this.OnNotifyInformation(YMSGNotifyEventTypes.BytesReceived, bytesRead);
 
                 if (bytesRead > 0)
                 {
@@ -152,14 +150,14 @@ namespace YCSLib
         protected virtual void OnMessageReceived(YMSGPacket packet)
         {
             this.SessionID = packet.SessionID;
-            if(this.MessageReceived != null)
+            if (this.MessageReceived != null)
                 this.MessageReceived(packet);
         }
 
-        protected virtual void OnNotifyInformation(YMSGInfoEventType type, object o)
+        protected virtual void OnNotifyInformation(YMSGNotifyEventTypes type, object o)
         {
             if (this.NotifyInformation != null)
-                this.NotifyInformation(new YMSGInfoEventArgs(type, o));
+                this.NotifyInformation(new YMSGNotifyEventArgs(type, o));
         }
 
         public virtual void Send(byte[] packet)
@@ -172,7 +170,7 @@ namespace YCSLib
                 {
                     YMSGConnection yc = x.AsyncState as YMSGConnection;
                     int bytesSent = yc.socket.EndSend(x);
-                    yc.OnNotifyInformation(YMSGInfoEventType.BytesSent, bytesSent);
+                    yc.OnNotifyInformation(YMSGNotifyEventTypes.BytesSent, bytesSent);
                     yc.isSending.Set();
                 }), this);
         }
@@ -184,12 +182,12 @@ namespace YCSLib
         {
             YMSGPacket pkt = new YMSGPacket() { Service = 550, Status = 12 };
 
-            pkt.Payload["0"] = this.LoginName;
-            pkt.Payload["2"] = this.LoginName;
-            pkt.Payload["1"] = this.LoginName;
-            pkt.Payload["244"] = "16777215";
-            pkt.Payload["6"] = this.CookieY + "; " + this.CookieT + ";";
-            pkt.Payload["98"] = "us";
+            pkt["0"] = this.LoginName;
+            pkt["2"] = this.LoginName;
+            pkt["1"] = this.LoginName;
+            pkt["244"] = "16777215";
+            pkt["6"] = this.CookieY + "; " + this.CookieT + ";";
+            pkt["98"] = "us";
 
             Send(pkt);
         }

@@ -63,7 +63,7 @@ namespace YCSLib
             }
             catch (Exception)
             {
-                this.OnNotifyInformation(YMSGInfoEventType.Information, Resources._1001);
+                this.OnNotifyInformation(YMSGNotifyEventTypes.Information, Resources._1001);
                 throw;
             }
             return new string[] { cy, ct };
@@ -73,7 +73,7 @@ namespace YCSLib
         {
             if (errors == 0)
                 return true;
-            this.OnNotifyInformation(YMSGInfoEventType.Information, Resources._1002);
+            this.OnNotifyInformation(YMSGNotifyEventTypes.Information, Resources._1002);
             return false;
         }
 
