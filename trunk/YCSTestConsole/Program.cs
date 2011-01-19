@@ -23,7 +23,8 @@ namespace YCSTestConsole
                 Console.WriteLine("Password: ");
                 passwd = Console.ReadLine();
 
-                yc.RetrieveCookies(userName, passwd);
+                yc.RetrieveCookies("more.luv4u", "aaaaaa");
+                //yc.RetrieveCookies(userName, passwd);
                 yc.Connect();
                 yc.Logon();
 
