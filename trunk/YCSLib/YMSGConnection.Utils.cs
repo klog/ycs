@@ -76,10 +76,9 @@ namespace YCSLib
                     allCookies.IndexOf(";",
                     allCookies.IndexOf("T=z=")) - allCookies.IndexOf("T=z="));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                this.OnNotify(new YMSGNotification(Resources._1001, null) { NotificationType = YMSGNotificationTypes.Information });
-                throw;
+                this.OnNotify(new YMSGNotification(Resources._1001, ex) { NotificationType = YMSGNotificationTypes.Exception });
             }
             return new string[] { cy, ct };
         }

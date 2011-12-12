@@ -55,7 +55,7 @@ namespace YCSTestConsole
                 Console.WriteLine("PM received from {0}:", value["4"]);
                 Console.WriteLine(YMSGText.StripTags(value["14"], YmsgStripTagOptions.StripAll));
             }
-            //Console.WriteLine(e.YMSGData.ToString());
+            //Console.WriteLine(value.YMSGData.ToString());
         }
     }
 }
