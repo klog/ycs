@@ -78,7 +78,7 @@ namespace YCSLib
             }
             catch (Exception)
             {
-                this.OnNotifyInformation(YMSGNotifyEventTypes.Information, Resources._1001);
+                this.OnNotify(new YMSGNotification(Resources._1001, null) { NotificationType = YMSGNotificationTypes.Information });
                 throw;
             }
             return new string[] { cy, ct };
@@ -88,7 +88,7 @@ namespace YCSLib
         {
             if (errors == 0)
                 return true;
-            this.OnNotifyInformation(YMSGNotifyEventTypes.Information, Resources._1002);
+            this.OnNotify(new YMSGNotification(Resources._1002, null) { NotificationType = YMSGNotificationTypes.Information });
             return false;
         }
 
@@ -97,6 +97,11 @@ namespace YCSLib
         private bool __isDisposed = false;
         protected virtual void Dispose(bool fromDispose)
         {
+            // smoke the Observers...
+            foreach (IObserver<YMSGPacket> watcher in _observers)
+                watcher.OnCompleted();
+            _observers.Clear();
+
             if (fromDispose)
             {
                 this.isConnecting.Dispose();

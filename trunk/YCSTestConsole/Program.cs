@@ -13,18 +13,17 @@ namespace YCSTestConsole
         static void Main(string[] args)
         {
             string userName, passwd;
+            YMSGClient client = new YMSGClient();
             using (YMSGConnection yc = new YMSGConnection("scs.msg.yahoo.com", 5050))
             {
-                yc.NotifyInformation += new Action<YMSGNotifyEventArgs>(yc_OnYMSGInformation);
-                yc.MessageReceived += new Action<YMSGPacket>(yc_OnYMSGMessage);
+                yc.Subscribe(client);
 
                 Console.WriteLine("Username: ");
                 userName = Console.ReadLine();
                 Console.WriteLine("Password: ");
                 passwd = Console.ReadLine();
 
-                yc.RetrieveCookies("more.luv4u", "aaaaaa");
-                //yc.RetrieveCookies(userName, passwd);
+                yc.RetrieveCookies(userName, passwd);
                 yc.Connect();
                 yc.Logon();
 
@@ -49,26 +48,6 @@ namespace YCSTestConsole
                     }
                 }
             }
-        }
-
-        static void yc_OnYMSGMessage(YMSGPacket e)
-        {
-            if (e.Service == 6)
-            {
-                Console.WriteLine("PM received from {0}:", e["4"]);
-                Console.WriteLine(YMSGText.StripTags(e["14"], YmsgStripTagOptions.StripAll));
-            }
-            //Console.WriteLine(e.YMSGData.ToString());
-        }
-
-        static void yc_OnYMSGInformation(YMSGNotifyEventArgs e)
-        {
-            if(e.EventType== YMSGNotifyEventTypes.BytesSent)
-                Console.WriteLine("Bytes Sent: " + e.Data);
-            else if(e.EventType == YMSGNotifyEventTypes.BytesReceived)
-                Console.WriteLine("Bytes Received: " + e.Data);
-            else if(e.EventType== YMSGNotifyEventTypes.Information)
-                Console.WriteLine(e.Data);
         }
     }
 }

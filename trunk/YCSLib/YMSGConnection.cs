@@ -28,7 +28,7 @@ using System.Collections.Specialized;
 
 namespace YCSLib
 {
-    public partial class YMSGConnection
+    public partial class YMSGConnection : IObservable<YMSGPacket>
     {
         public YMSGConnection()
         {
@@ -39,11 +39,6 @@ namespace YCSLib
             this.Host = chatHost;
             this.Port = port;
         }
-
-        #region events
-        public Action<YMSGPacket> MessageReceived;
-        public Action<YMSGNotifyEventArgs> NotifyInformation;
-        #endregion
 
         #region properties
         public string CookieY { get; set; }
@@ -88,7 +83,7 @@ namespace YCSLib
             {
                 int bytesRead = store.socket.EndReceive(iar);
 
-                this.OnNotifyInformation(YMSGNotifyEventTypes.BytesReceived, bytesRead);
+                this.OnNotify(new YMSGNotification(bytesRead.ToString(), null) { NotificationType = YMSGNotificationTypes.BytesReceived });
 
                 if (bytesRead > 0)
                 {
@@ -165,14 +160,14 @@ namespace YCSLib
         protected virtual void OnMessageReceived(YMSGPacket packet)
         {
             this.SessionID = packet.SessionID;
-            if (this.MessageReceived != null)
-                this.MessageReceived(packet);
+            foreach (IObserver<YMSGPacket> watcher in _observers)
+                watcher.OnNext(packet);
         }
 
-        protected virtual void OnNotifyInformation(YMSGNotifyEventTypes type, object o)
+        protected virtual void OnNotify(YMSGNotification notification)
         {
-            if (this.NotifyInformation != null)
-                this.NotifyInformation(new YMSGNotifyEventArgs(type, o));
+            foreach (IObserver<YMSGPacket> watcher in _observers)
+                watcher.OnError(notification);
         }
 
         public virtual void Send(byte[] packet)
@@ -185,7 +180,7 @@ namespace YCSLib
                 {
                     YMSGConnection yc = x.AsyncState as YMSGConnection;
                     int bytesSent = yc.socket.EndSend(x);
-                    yc.OnNotifyInformation(YMSGNotifyEventTypes.BytesSent, bytesSent);
+                    yc.OnNotify(new YMSGNotification(bytesSent.ToString(), null) { NotificationType = YMSGNotificationTypes.BytesSent });
                     yc.isSending.Set();
                 }), this);
         }
@@ -228,6 +223,37 @@ namespace YCSLib
 
             Send(pkt);
         }
+        #endregion
+
+        #region Observable implementation
+
+        private List<IObserver<YMSGPacket>> _observers =
+            new List<IObserver<YMSGPacket>>();
+
+        public IDisposable Subscribe(IObserver<YMSGPacket> observer)
+        {
+            if (!_observers.Contains(observer))
+                _observers.Add(observer);
+            return new Teardown() { observers = _observers, observer = observer };
+        }
+
+        private class Teardown : IDisposable
+        {
+            public List<IObserver<YMSGPacket>> observers { get; set; }
+            public IObserver<YMSGPacket> observer { get; set; }
+
+            public void Dispose()
+            {
+                if (observer != null && observers.Contains(observer))
+                    observers.Remove(observer);
+            }
+        }
+
+        public void Close()
+        {
+            this.Dispose();
+        }
+
         #endregion
     }
 }

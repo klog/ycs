@@ -54,8 +54,8 @@
     <Compile Include="YMSGCatalog.cs" />
     <Compile Include="YMSGConnection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="YMSGNotifyEventArgs.cs" />
-    <Compile Include="YMSGNotifyEventTypes.cs" />
+    <Compile Include="YMSGNotification.cs" />
+    <Compile Include="YMSGNotificationTypes.cs" />
     <Compile Include="YMSGPacket.cs" />
     <Compile Include="YMSGPacketBuilder.cs" />
     <Compile Include="YMSGPacket.Payload.cs" />
