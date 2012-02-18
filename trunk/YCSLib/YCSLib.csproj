@@ -60,6 +60,7 @@
     <Compile Include="YMSGPacketBuilder.cs" />
     <Compile Include="YMSGPacket.Payload.cs" />
     <Compile Include="YMSGText.cs" />
+    <Compile Include="YMSGUser.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="YMSGConnection.Utils.cs" />

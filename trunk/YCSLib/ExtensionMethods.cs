@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
+﻿
 /*
  * This source code is provided "as is" and without warranties as
  * to fitness for a particular purpose or merchantability. You may
@@ -16,6 +13,9 @@ using System.Linq;
  * Copyright (C) 2010 Wickedcoder - All Rights Reserved.
 */
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Diagnostics;
 
